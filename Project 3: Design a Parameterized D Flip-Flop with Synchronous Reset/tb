@@ -1,0 +1,58 @@
+`timescale 1ns/1ps
+
+module tb_dff_sync;
+
+    reg clk;
+    reg rst;
+    reg en;
+    reg [7:0] d;
+    wire [7:0] q;
+
+    dff_sync dut (
+        .clk(clk),
+        .rst(rst),
+        .en(en),
+        .d(d),
+        .q(q)
+    );
+
+    // Clock generation
+    always #5 clk = ~clk;
+
+    initial begin
+        clk = 0;
+        rst = 1;
+        en  = 0;
+        d   = 8'hAA;
+
+        // Reset
+        #10;
+        $display("rst=%b en=%b d=%h q=%h", rst, en, d, q);
+
+        // Release reset and enable
+        rst = 0;
+        en  = 1;
+        d   = 8'h55;
+        #10;
+        $display("rst=%b en=%b d=%h q=%h", rst, en, d, q);
+
+        // Change data
+        d = 8'hF0;
+        #10;
+        $display("rst=%b en=%b d=%h q=%h", rst, en, d, q);
+
+        // Disable enable -> q should hold
+        en = 0;
+        d = 8'h0F;
+        #10;
+        $display("rst=%b en=%b d=%h q=%h", rst, en, d, q);
+
+        // Enable again
+        en = 1;
+        #10;
+        $display("rst=%b en=%b d=%h q=%h", rst, en, d, q);
+
+        $finish;
+    end
+
+endmodule
