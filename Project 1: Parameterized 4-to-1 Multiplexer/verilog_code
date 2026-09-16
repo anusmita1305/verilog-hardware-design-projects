@@ -1,0 +1,20 @@
+module mux4to1 #(parameter DATA_WIDTH = 8) (        // Configurable data width
+
+input wire [DATA_WIDTH-1:0] in0, // Input channel 0
+input wire [DATA_WIDTH-1:0] in1, // Input channel 1
+input wire [DATA_WIDTH-1:0] in2, // Input channel 2
+input wire [DATA_WIDTH-1:0] in3, // Input channel 3
+input wire [1:0] sel, // 2-bit select
+output reg [DATA_WIDTH-1:0] y
+);
+always @(*) begin
+case (sel)
+2'b00: y = in0;
+2'b01: y = in1;
+2'b10: y = in2;
+2'b11: y = in3;
+endcase
+// Selected output
+  default: y = {DATA_WIDTH{1'b0}}; // Avoid latch
+end
+endmodule
